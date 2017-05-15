@@ -11,19 +11,22 @@ public class BoardFactory {
         int height = board.getHeight();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Square square = grid[x][y];
-                for (Direction dir : Direction.values()) {
-                    int dirX = (width + x + dir.getDeltaX()) % width;
-                    int dirY = (height + y + dir.getDeltaY()) % height;
-                    Square neighbour = grid[dirX][dirY];
-                    square.link(neighbour, dir);
-                }
+                direction(grid, width, height, x, y);
             }
         }
-
         return board;
     }
     // end::createBoard[]
+    
+    private void direction(Square[][] grid, int width, int height, int x, int y) {
+    	Square square = grid[x][y];
+    	for (Direction dir : Direction.values()) {
+            int dirX = (width + x + dir.getDeltaX()) % width;
+            int dirY = (height + y + dir.getDeltaY()) % height;
+            Square neighbour = grid[dirX][dirY];
+            square.link(neighbour, dir);
+        }
+    }
 }
 
 class Board {
