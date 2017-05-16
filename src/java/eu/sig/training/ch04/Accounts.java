@@ -1,7 +1,17 @@
 package eu.sig.training.ch04;
 
-public class Accounts {
-    @SuppressWarnings("unused")
+public abstract class Accounts {
+	
+	Money balance;
+	float interestPercentage;
+	
+    public Accounts(Money balance, float interestPercentage) {
+		super();
+		this.balance = balance;
+		this.interestPercentage = interestPercentage;
+	}
+
+	@SuppressWarnings("unused")
     public static CheckingAccount findAcctByNumber(String number) {
         return new CheckingAccount();
     }
@@ -15,4 +25,27 @@ public class Accounts {
         return sum % 11 == 0;
     }
     // end::isValid[]
+    
+    public void addInterest() {
+        Money interest = balance.multiply(interestPercentage);
+        if (interest.greaterThan(0)) {
+            balance.add(interest);
+        } else {
+            balance.substract(interest);
+        }
+    }
+    
+    public abstract Transfer makeTransfer(String counterAccount, Money amount) throws BusinessException;
+    
+    public Transfer transfer(String counterAccount, Money amount) throws BusinessException {    	
+        if (isValid(counterAccount)) {
+            // 3. Look up counter account and make transfer object:
+            CheckingAccount acct = Accounts.findAcctByNumber(counterAccount);
+            Transfer result = new Transfer(this, acct, amount);
+            return result;
+        } else {
+            throw new BusinessException("Invalid account number!");
+        }
+    }
+    
 }
